@@ -16,11 +16,9 @@ RUN apt-get update \
 
 WORKDIR /var/www/html
 COPY --from=build /app .
+COPY docker/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 
-RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' \
-    /etc/apache2/sites-available/000-default.conf \
-    /etc/apache2/apache2.conf \
-    && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
+RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
 
 ENV APP_ENV=production
