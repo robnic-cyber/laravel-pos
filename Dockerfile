@@ -17,12 +17,17 @@ RUN apt-get update \
 WORKDIR /var/www/html
 COPY --from=build /app .
 COPY docker/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY docker/start.sh /usr/local/bin/start-laravel-pos
 
 RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
+    && chmod +x /usr/local/bin/start-laravel-pos \
     && chown -R www-data:www-data storage bootstrap/cache
 
 ENV APP_ENV=production
 ENV APP_DEBUG=false
+ENV DB_CONNECTION=sqlite
+ENV SESSION_DRIVER=file
+ENV CACHE_STORE=file
 
 EXPOSE 80
-CMD ["apache2-foreground"]
+CMD ["start-laravel-pos"]
